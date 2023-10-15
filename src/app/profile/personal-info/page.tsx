@@ -8,6 +8,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import TextInput from "@/components/ui/TextInput";
 import Select from "@/components/ui/Select";
 import SelectOption from "@/components/ui/SelectOption";
+import { countries } from "@/data/countries";
 
 const schema = yup
 	.object()
@@ -70,10 +71,11 @@ export default function PersonalInfo() {
 						<div className="basis-1/2 flex flex-col">
 							<Label htmlFor="country">Country</Label>
 							<Select className="mt-2">
-								<SelectOption>Choose a country</SelectOption>
-								<SelectOption value="US">United States</SelectOption>
-								<SelectOption value="CA">Canada</SelectOption>
-								<SelectOption value="FR">France</SelectOption>
+								{countries.map((country) => (
+									<SelectOption key={country.iso_code} value={country.iso_code}>
+										{country.name}
+									</SelectOption>
+								))}
 							</Select>
 							{errors.firstName && <ErrorMessage>Email is required.</ErrorMessage>}
 						</div>

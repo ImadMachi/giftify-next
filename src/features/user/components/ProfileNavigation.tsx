@@ -1,5 +1,6 @@
+"use client";
 import Icons from "@/components/Icons";
-import Link from "next/link";
+import ListItem from "./ProfileNavigationListItem";
 
 export default function ProfileNavigation() {
 	return (
@@ -26,15 +27,5 @@ export default function ProfileNavigation() {
 				</ListItem>
 			</ul>
 		</div>
-	);
-}
-
-function ListItem({ href, title, children }: { href: string; title: string; children: React.ReactNode }) {
-	return (
-		<li className="mb-10 hover:text-gray-950">
-			<Link href={href} className="flex">
-				{children} <span className="ml-2">{title}</span>
-			</Link>
-		</li>
 	);
 }
