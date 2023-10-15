@@ -4,13 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Icons from "./Icons";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
 
 export default function Navbar() {
 	const [isCollapsed, setIsCollapsed] = useState(true);
+	const { user, error, isLoading } = useUser();
+
 	return (
 		<nav className="bg-white border-gray-100 border-b-2">
-			<div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4">
+			<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 				<Link href="/" className="flex items-center">
 					<span className="self-center text-5xl tracking-wider font-semibold whitespace-nowrap text-cyan-600">
 						Giftify
@@ -19,7 +21,7 @@ export default function Navbar() {
 				<MenuButton isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 				<div className={`${isCollapsed && "hidden"} w-full md:block md:w-auto`} id="navbar-dropdown">
 					<ul className="flex justify-around font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:mt-0 md:border-0 md:bg-white">
-						<UserDropdown />
+						<UserDropdown user={user} />
 						<MenuItem href="#">
 							<div className="flex md:flex-col items-center">
 								<Icons.Heart className="text-red-600 rotate-0 scale-100 transition-all" />
@@ -45,11 +47,10 @@ export default function Navbar() {
 	);
 }
 
-function UserDropdown() {
+function UserDropdown({ user }: { user?: UserProfile }) {
 	const [isCollapsed, setIsCollapsed] = useState(true);
-	const { user, error, isLoading } = useUser();
 
-	if (!user)
+	if (!user) {
 		return (
 			<Link href="/api/auth/login">
 				<div className="flex md:flex-col items-center">
@@ -58,6 +59,7 @@ function UserDropdown() {
 				</div>
 			</Link>
 		);
+	}
 	return (
 		<li>
 			<button
@@ -66,12 +68,10 @@ function UserDropdown() {
 				data-dropdown-toggle="dropdownNavbar"
 				className="flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto"
 			>
-				<Link href="/api/auth/login">
-					<div className="flex md:flex-col items-center">
-						<Icons.User className="text-cyan-600 rotate-0 scale-100 transition-all" />
-						<span className="text-xs underline">{"Hi, " + user.name?.split(" ")[0]}</span>
-					</div>
-				</Link>
+				<div className="flex md:flex-col items-center">
+					<Icons.User className="text-cyan-600 rotate-0 scale-100 transition-all" />
+					<span className="text-xs underline">{"Hi, " + user.name?.split(" ")[0]}</span>
+				</div>
 				<svg
 					className="w-2.5 h-2.5 ml-2.5"
 					aria-hidden="true"
@@ -79,13 +79,7 @@ function UserDropdown() {
 					fill="none"
 					viewBox="0 0 10 6"
 				>
-					<path
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="m1 1 4 4 4-4"
-					/>
+					<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
 				</svg>
 			</button>
 			<div
@@ -96,15 +90,15 @@ function UserDropdown() {
 			>
 				<ul className="py-2 text-sm text-gray-700" aria-labelledby="dropdownLargeButton">
 					<li>
-						<a href="#" className="block px-4 py-2 hover:bg-gray-100">
-							Dashboard
-						</a>
+						<Link href="/profile/personal-info" className="block px-4 py-2 hover:bg-gray-100">
+							Profile
+						</Link>
 					</li>
 				</ul>
 				<div className="py-1">
-					<a href="/api/auth/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+					<Link href="/api/auth/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 						Sign out
-					</a>
+					</Link>
 				</div>
 			</div>
 		</li>

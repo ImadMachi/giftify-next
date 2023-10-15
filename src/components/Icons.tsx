@@ -1,4 +1,4 @@
-import { Moon, Sun, User, Heart, Gift, ShoppingCart } from "lucide-react";
+import { Moon, Sun, User, Heart, Gift, ShoppingCart, Star, LandPlot, CreditCard } from "lucide-react";
 
 export const Icons = {
 	Sun,
@@ -7,6 +7,9 @@ export const Icons = {
 	Heart,
 	Gift,
 	ShoppingCart,
+	Star,
+	LandPlot,
+	CreditCard,
 };
 
 export default Icons;
