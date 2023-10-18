@@ -19,6 +19,8 @@ const schema = yup
 		phoneNumber: yup.string(),
 		country: yup.string(),
 		city: yup.string(),
+		address: yup.string(),
+		zipCode: yup.string(),
 	})
 	.required();
 
@@ -90,7 +92,24 @@ export default function PersonalInfo() {
 						</div>
 					</div>
 
-					<input type="submit" />
+					<div className="flex flex-col mb-10 gap-2">
+						<Label htmlFor="address">Address</Label>
+						<TextInput {...register("address")} id="address" placeholder="Enter your address" className="mt-2 w-full" />
+					</div>
+
+					<div className="flex mb-10 gap-2">
+						<div className="basis-1/2">
+							<Label htmlFor="city">City</Label>
+							<TextInput {...register("city")} id="city" placeholder="Enter city" className="mt-2 w-full" />
+						</div>
+						<div className="basis-1/2">
+							<Label htmlFor="zipCode">Zip Code</Label>
+							<TextInput {...register("zipCode")} id="zipCode" placeholder="Enter zip code" className="mt-2 w-full" />
+						</div>
+					</div>
+					<div>
+						<input type="submit" value="Update Profile" className="bg-black text-white py-3 px-4 rounded-sm" />
+					</div>
 				</form>
 			</div>
 		</div>
