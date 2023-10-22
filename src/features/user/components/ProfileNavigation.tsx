@@ -10,7 +10,7 @@ export default function ProfileNavigation() {
 				<ListItem href="/profile/personal-info" title="Personal Info">
 					<Icons.User size={24} />
 				</ListItem>
-				<ListItem href="#" title="Order">
+				<ListItem href="/profile/orders" title="Orders">
 					<Icons.ShoppingCart size={24} />
 				</ListItem>
 				<ListItem href="#" title="Wishlist">

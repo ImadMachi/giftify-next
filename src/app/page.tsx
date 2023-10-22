@@ -1,17 +1,11 @@
-"use client";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
-
-export default function Home() {
-	const { user, error, isLoading } = useUser();
-
-	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>{error.message}</div>;
-
-	if (user) {
-		return <div>Welcome</div>;
+export default async function Home() {
+	try {
+		const accessToken = await getAccessToken();
+		console.log(accessToken);
+	} catch (error) {
+		console.log("No access token");
 	}
-
-	return <Link href="/api/auth/login">Login</Link>;
+	return <div>Welcome</div>;
 }

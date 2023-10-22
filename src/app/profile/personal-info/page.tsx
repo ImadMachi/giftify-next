@@ -1,116 +1,42 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { Label } from "@/features/user";
-import ErrorMessage from "@/components/ErrorMessage";
-import TextInput from "@/components/ui/TextInput";
-import Select from "@/components/ui/Select";
-import SelectOption from "@/components/ui/SelectOption";
-import { countries } from "@/data/countries";
-
-const schema = yup
-	.object()
-	.shape({
-		firstName: yup.string().required(),
-		lastName: yup.string().required(),
-		email: yup.string().email().required(),
-		phoneNumber: yup.string(),
-		country: yup.string(),
-		city: yup.string(),
-		address: yup.string(),
-		zipCode: yup.string(),
-	})
-	.required();
+import Image from "next/image";
+import AvatarImage from "@/assets/images/avatar.jpg";
+import { Edit } from "lucide-react";
+import { useState } from "react";
+import { PersonalInfoForm as Form } from "@/features/user";
 
 export default function PersonalInfo() {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm({
-		resolver: yupResolver(schema),
-	});
+	const [isReadOnly, setIsReadOnly] = useState(true);
+
 	return (
-		<div className="p-10 h-full w-full strech">
-			<div className="h-full">
-				<form onSubmit={handleSubmit((data) => console.log(data))} className="flex flex-col max-w-screen-sm">
-					<div className="flex mb-10 gap-2">
-						<div className="basis-1/2">
-							<div>
-								<Label htmlFor="firstName">First Name</Label>
-								<TextInput {...register("firstName")} id="firstName" placeholder="John" className="mt-2 w-full" />
-							</div>
-							{errors.firstName && <ErrorMessage>First name is required.</ErrorMessage>}
-						</div>
-						<div className="basis-1/2">
-							<div>
-								<Label htmlFor="lastName">Last Name</Label>
-								<TextInput {...register("lastName")} id="lastName" placeholder="Doe" className="mt-2 w-full" />
-							</div>
-							{errors.firstName && <ErrorMessage>Last name is required.</ErrorMessage>}
-						</div>
+		<div className="p-10 h-full w-full">
+			<div className="text-right">
+				<label className="relative inline-flex items-center cursor-pointer">
+					<input
+						type="checkbox"
+						value=""
+						className="sr-only peer"
+						checked={!isReadOnly}
+						onChange={(e) => {
+							setIsReadOnly(!e.target.checked);
+						}}
+					/>
+					<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+					<span className="ml-3 text-sm font-medium text-gray-900">Switch Edit</span>
+				</label>
+			</div>
+			<div className="flex flex-col-reverse lg:flex-row">
+				<Form isReadOnly={isReadOnly} />
+				<div className="basis-1/3">
+					<div className="p-10 relative">
+						<Image src={AvatarImage || "default-profile-image-url"} alt="Profile" className="w-full rounded-full" />
+						<label htmlFor="profile-image">
+							<Edit className="w-6 h-6 absolute bottom-10 right-10 cursor-pointer" />
+						</label>
+						<input type="file" id="profile-image" accept="image/*" onChange={() => {}} className="hidden" />
 					</div>
-					<div className="flex mb-10 gap-2">
-						<div className="basis-1/2">
-							<Label htmlFor="email">Email</Label>
-							<TextInput {...register("email")} id="email" placeholder="john.doe@gmail.com" className="mt-2 w-full" />
-							{errors.firstName && <ErrorMessage>Email is required.</ErrorMessage>}
-						</div>
-						<div className="basis-1/2">
-							<Label htmlFor="phoneNumber">Phone Number</Label>
-							<TextInput
-								{...register("phoneNumber")}
-								id="phoneNumber"
-								placeholder="+2126********"
-								className="mt-2 w-full"
-							/>
-						</div>
-					</div>
-
-					<div className="flex mb-10 gap-2">
-						<div className="basis-1/2 flex flex-col">
-							<Label htmlFor="country">Country</Label>
-							<Select className="mt-2">
-								{countries.map((country) => (
-									<SelectOption key={country.iso_code} value={country.iso_code}>
-										{country.name}
-									</SelectOption>
-								))}
-							</Select>
-							{errors.firstName && <ErrorMessage>Email is required.</ErrorMessage>}
-						</div>
-						<div className="basis-1/2">
-							<Label htmlFor="phoneNumber">Phone Number</Label>
-							<TextInput
-								{...register("phoneNumber")}
-								id="phoneNumber"
-								placeholder="+2126********"
-								className="mt-2 w-full"
-							/>
-						</div>
-					</div>
-
-					<div className="flex flex-col mb-10 gap-2">
-						<Label htmlFor="address">Address</Label>
-						<TextInput {...register("address")} id="address" placeholder="Enter your address" className="mt-2 w-full" />
-					</div>
-
-					<div className="flex mb-10 gap-2">
-						<div className="basis-1/2">
-							<Label htmlFor="city">City</Label>
-							<TextInput {...register("city")} id="city" placeholder="Enter city" className="mt-2 w-full" />
-						</div>
-						<div className="basis-1/2">
-							<Label htmlFor="zipCode">Zip Code</Label>
-							<TextInput {...register("zipCode")} id="zipCode" placeholder="Enter zip code" className="mt-2 w-full" />
-						</div>
-					</div>
-					<div>
-						<input type="submit" value="Update Profile" className="bg-black text-white py-3 px-4 rounded-sm" />
-					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	);
