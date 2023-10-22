@@ -8,7 +8,7 @@ const TextInput: React.FC<TextInputProps> = ({ className, ...props }) => {
 		<input
 			type="text"
 			{...props}
-			className={cn("border border-gray-300 rounded-sm p-3 focus:outline-none", className)}
+			className={cn("border border-gray-300 rounded-sm p-3 focus:outline-none rounded-lg", className)}
 		/>
 	);
 };
