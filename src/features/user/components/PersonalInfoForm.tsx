@@ -9,76 +9,119 @@ import * as yup from "yup";
 import ErrorMessage from "@/components/ErrorMessage";
 import { countries } from "@/data/countries";
 import SelectOption from "@/components/ui/SelectOption";
+import type User from "../types/User";
+import { useState } from "react";
 
-const schema = yup
-	.object()
-	.shape({
-		firstName: yup.string().required(),
-		lastName: yup.string().required(),
-		email: yup.string().email().required(),
-		phoneNumber: yup.string(),
-		country: yup.string(),
-		city: yup.string(),
-		address: yup.string(),
-		zipCode: yup.string(),
-	})
-	.required();
+const schema = yup.object().shape({
+	first_name: yup.string(),
+	last_name: yup.string(),
+	email: yup.string(),
+	phone_number: yup.string(),
+	country: yup.string(),
+	city: yup.string(),
+	address: yup.string(),
+	zip_code: yup.string(),
+});
 
-export default function PersonalInfoForm({ isReadOnly }: { isReadOnly: boolean }) {
+export default function PersonalInfoForm({ user, accessToken }: { user: User; accessToken?: string }) {
+	const [isReadOnly, setIsReadOnly] = useState(true);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
+		defaultValues: {
+			first_name: user.first_name,
+			last_name: user.last_name,
+			email: user.email,
+			phone_number: user.phone_number,
+			country: user.country,
+			city: user.city,
+			address: user.address,
+			zip_code: user.zip_code,
+		},
 	});
+
+	const handleForm = async (data: yup.InferType<typeof schema>) => {
+		try {
+			const response = await fetch("http://127.0.0.1:8000/api/users/1", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to submit form");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
-		<form onSubmit={handleSubmit((data) => console.log(data))} className="flex flex-col basis-2/3">
+		<form onSubmit={handleSubmit(handleForm)} className="flex flex-col basis-2/3">
+			<label className="relative inline-flex items-center cursor-pointer mb-4">
+				<input
+					type="checkbox"
+					value=""
+					className="sr-only peer"
+					checked={!isReadOnly}
+					onChange={(e) => {
+						setIsReadOnly(!e.target.checked);
+					}}
+				/>
+				<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+				<span className="ml-3 text-sm font-medium text-gray-900">Switch Edit</span>
+			</label>
 			<div className="flex mb-10 gap-2">
 				<div className="basis-1/2">
 					<div>
-						<Label htmlFor="firstName">First Name</Label>
+						<Label htmlFor="first_name">First Name</Label>
 						<TextInput
-							{...register("firstName")}
-							id="firstName"
+							register={register("first_name")}
+							id="first_name"
 							placeholder="John"
 							className="mt-2 w-full"
 							readOnly={isReadOnly}
 						/>
 					</div>
-					{errors.firstName && <ErrorMessage>First name is required.</ErrorMessage>}
+					{errors.first_name && <ErrorMessage>First name is required.</ErrorMessage>}
 				</div>
 				<div className="basis-1/2">
 					<div>
-						<Label htmlFor="lastName">Last Name</Label>
+						<Label htmlFor="last_name">Last Name</Label>
 						<TextInput
-							{...register("lastName")}
-							id="lastName"
+							register={register("last_name")}
+							id="last_name"
 							placeholder="Doe"
 							className="mt-2 w-full"
 							readOnly={isReadOnly}
 						/>
 					</div>
-					{errors.firstName && <ErrorMessage>Last name is required.</ErrorMessage>}
+					{errors.last_name && <ErrorMessage>Last name is required.</ErrorMessage>}
 				</div>
 			</div>
 			<div className="flex mb-10 gap-2">
 				<div className="basis-1/2">
 					<Label htmlFor="email">Email</Label>
 					<TextInput
-						{...register("email")}
+						register={register("email")}
 						id="email"
 						placeholder="john.doe@gmail.com"
 						className="mt-2 w-full"
 						readOnly={isReadOnly}
 					/>
-					{errors.firstName && <ErrorMessage>Email is required.</ErrorMessage>}
+					{errors.email && <ErrorMessage>Email is required.</ErrorMessage>}
 				</div>
 				<div className="basis-1/2">
-					<Label htmlFor="phoneNumber">Phone Number</Label>
+					<Label htmlFor="phone_number">Phone Number</Label>
 					<TextInput
-						{...register("phoneNumber")}
-						id="phoneNumber"
+						register={register("phone_number")}
+						id="phone_number"
 						placeholder="+2126********"
 						className="mt-2 w-full"
 						readOnly={isReadOnly}
@@ -98,11 +141,11 @@ export default function PersonalInfoForm({ isReadOnly }: { isReadOnly: boolean }
 					</Select>
 				</div>
 				<div className="basis-1/2">
-					<Label htmlFor="phoneNumber">Phone Number</Label>
+					<Label htmlFor="city">City</Label>
 					<TextInput
-						{...register("phoneNumber")}
-						id="phoneNumber"
-						placeholder="+2126********"
+						register={register("city")}
+						id="city"
+						placeholder="Enter city"
 						className="mt-2 w-full"
 						readOnly={isReadOnly}
 					/>
@@ -112,7 +155,7 @@ export default function PersonalInfoForm({ isReadOnly }: { isReadOnly: boolean }
 			<div className="flex flex-col mb-10 gap-2">
 				<Label htmlFor="address">Address</Label>
 				<TextInput
-					{...register("address")}
+					register={register("address")}
 					id="address"
 					placeholder="Enter your address"
 					className="mt-2 w-full"
@@ -122,20 +165,10 @@ export default function PersonalInfoForm({ isReadOnly }: { isReadOnly: boolean }
 
 			<div className="flex mb-10 gap-2">
 				<div className="basis-1/2">
-					<Label htmlFor="city">City</Label>
+					<Label htmlFor="zip_code">Zip Code</Label>
 					<TextInput
-						{...register("city")}
-						id="city"
-						placeholder="Enter city"
-						className="mt-2 w-full"
-						readOnly={isReadOnly}
-					/>
-				</div>
-				<div className="basis-1/2">
-					<Label htmlFor="zipCode">Zip Code</Label>
-					<TextInput
-						{...register("zipCode")}
-						id="zipCode"
+						register={register("zip_code")}
+						id="zip_code"
 						placeholder="Enter zip code"
 						className="mt-2 w-full"
 						readOnly={isReadOnly}
