@@ -2,9 +2,10 @@
 import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icons from "./Icons";
 import { UserProfile, useUser } from "@auth0/nextjs-auth0/client";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 
 export default function Navbar() {
 	const [isCollapsed, setIsCollapsed] = useState(true);
@@ -14,7 +15,7 @@ export default function Navbar() {
 		<nav className="bg-white border-gray-100 border-b-2">
 			<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 				<Link href="/" className="flex items-center">
-					<span className="self-center text-5xl tracking-wider font-semibold whitespace-nowrap text-cyan-600">
+					<span className="self-center text-5xl tracking-wider font-semibold whitespace-nowrap w-4 text-cyan-600">
 						Giftify
 					</span>
 				</Link>
