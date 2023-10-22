@@ -19,9 +19,6 @@ export default function ProfileNavigation() {
 				<ListItem href="/profile/reviews" title="Reviews">
 					<Icons.Star size={24} />
 				</ListItem>
-				<ListItem href="/profile/address" title="Address">
-					<Icons.LandPlot size={24} />
-				</ListItem>
 				<ListItem href="/profile/payment-method" title="Payment Method">
 					<Icons.CreditCard size={24} />
 				</ListItem>

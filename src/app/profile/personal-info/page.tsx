@@ -23,6 +23,7 @@ const schema = yup
 	.required();
 
 export default function PersonalInfo() {
+	
 	const {
 		register,
 		handleSubmit,
@@ -30,6 +31,7 @@ export default function PersonalInfo() {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
+
 	return (
 		<div className="p-10 h-full w-full strech">
 			<div className="h-full">
